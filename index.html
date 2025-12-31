@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Realistic Professional Fireworks</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Countdown to New Year 2026</title>
 <style>
 * {
     margin: 0;
@@ -23,7 +23,8 @@ body {
 }
 .container {
     text-align: center;
-    max-width: 460px;
+    max-width: 500px;
+    width: 90%;
     padding: 40px 20px;
     background: rgba(0,0,0,0.3);
     border-radius: 20px;
@@ -32,61 +33,54 @@ body {
     z-index: 1000;
 }
 .title {
-    font-size: 32px;
+    font-size: clamp(24px, 5vw, 32px);
     font-weight: bold;
     color: #ffd700;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     text-shadow: 0 0 20px rgba(255,215,0,0.8);
 }
+.countdown-big {
+    font-size: clamp(40px, 10vw, 80px);
+    font-weight: bold;
+    color: #ffd700;
+    margin: 20px 0;
+    text-shadow: 0 0 30px rgba(255,215,0,0.8);
+    animation: pulse 1s infinite;
+}
 .message {
-    font-size: 20px;
-    line-height: 1.7;
-    margin-bottom: 30px;
+    font-size: clamp(16px, 4vw, 20px);
+    line-height: 1.6;
+    margin-bottom: 20px;
     opacity: 0.95;
 }
 .quote {
     font-style: italic;
-    font-size: 18px;
-    margin: 25px 0;
+    font-size: clamp(14px, 3.5vw, 18px);
+    margin: 20px 0;
     opacity: 0.85;
     color: #e0e0e0;
 }
-.firework-rocket {
-    position: absolute;
-    width: 4px;
-    height: 8px;
-    border-radius: 4px 4px 2px 2px;
-    pointer-events: none;
-    z-index: 10;
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
 }
-.firework-particle {
+.firework-rocket, .firework-particle, .rocket-trail, .sparkle {
     position: absolute;
-    border-radius: 50%;
     pointer-events: none;
-    z-index: 5;
+    will-change: transform, opacity;
+    transform: translateZ(0);
 }
-.rocket-trail {
-    position: absolute;
-    width: 2px;
-    height: 2px;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 8;
-}
-.sparkle {
-    position: absolute;
-    width: 1.5px;
-    height: 1.5px;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 3;
-}
+.firework-rocket { z-index: 10; width: 4px; height: 8px; border-radius: 4px 4px 2px 2px; }
+.firework-particle { z-index: 5; border-radius: 50%; }
+.rocket-trail { z-index: 8; width: 2px; height: 2px; border-radius: 50%; }
+.sparkle { z-index: 3; width: 1.5px; height: 1.5px; border-radius: 50%; }
 </style>
 </head>
 <body>
 <!-- BEFORE 12 PAGE -->
 <div class="container" id="beforePage">
-    <div class="title">The Year is Passing...</div>
+    <div class="title">Countdown to New Year 2026</div>
+    <div class="countdown-big" id="countdown">Loading...</div>
     <div class="message">
         Not everything needs to be rushed.<br>
         Some endings deserve silence.<br><br>
@@ -104,7 +98,7 @@ body {
 <!-- AFTER 12 PAGE -->
 <div class="container" id="afterPage" style="display: none;">
     <div class="title" style="color: #fff; text-shadow: 0 0 30px #fff; margin-bottom: 20px;">Happy New Year 2026</div>
-    <div class="message" style="font-size: 21px; line-height: 1.8;">
+    <div class="message" style="font-size: clamp(18px, 4vw, 21px); line-height: 1.7;">
         You made it.<br><br>
         A whole new year stands before you —<br>
         unwritten, full of quiet possibilities.<br><br>
@@ -126,12 +120,13 @@ body {
             color: white;
             border: none;
             padding: 15px 40px;
-            font-size: 18px;
+            font-size: clamp(16px, 4vw, 18px);
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 10px 30px rgba(255,107,107,0.5);
             transition: transform 0.2s;
+            width: 100%;
         " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
             Send Good Wishes ✨
         </button>
@@ -139,6 +134,7 @@ body {
 </div>
 
 <script>
+const countdownEl = document.getElementById('countdown');
 const beforePage = document.getElementById('beforePage');
 const afterPage = document.getElementById('afterPage');
 let fireworksActive = false;
@@ -161,19 +157,23 @@ function getPyroColor() {
     return colorSet[Math.floor(Math.random() * colorSet.length)];
 }
 
-// Show "After 12" page only at midnight
-function checkTime() {
+// Update countdown every second until midnight January 1, 2026
+function updateCountdown() {
     const now = new Date();
-    const target = new Date();
-    target.setHours(0, 0, 0, 0);
-    target.setDate(target.getDate() + 1);
-
+    const target = new Date('January 1, 2026 00:00:00');
     const diff = target - now;
+
     if (diff <= 0) {
         showAfterPage();
-    } else {
-        setTimeout(checkTime, 1000);
+        return;
     }
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    countdownEl.textContent = `${hours}h ${minutes}m ${seconds}s`;
+    setTimeout(updateCountdown, 1000);
 }
 
 function showAfterPage() {
@@ -301,8 +301,8 @@ function sendWishes() {
     alert('🌟 Good wishes sent to everyone you hold dear!\n\nMay 2026 bring you peace, love, and countless beautiful moments. 🎉🎆');
 }
 
-// Start checking the time
-checkTime();
+// Start countdown
+updateCountdown();
 </script>
 </body>
 </html>
