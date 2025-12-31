@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Realistic Professional Fireworks</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Georgia', serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+    color: #f4f4f1;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.container {
+    text-align: center;
+    max-width: 460px;
+    padding: 40px 20px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    z-index: 1000;
+}
+.title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #ffd700;
+    margin-bottom: 30px;
+    text-shadow: 0 0 20px rgba(255,215,0,0.8);
+}
+.message {
+    font-size: 20px;
+    line-height: 1.7;
+    margin-bottom: 30px;
+    opacity: 0.95;
+}
+.quote {
+    font-style: italic;
+    font-size: 18px;
+    margin: 25px 0;
+    opacity: 0.85;
+    color: #e0e0e0;
+}
+.firework-rocket {
+    position: absolute;
+    width: 4px;
+    height: 8px;
+    border-radius: 4px 4px 2px 2px;
+    pointer-events: none;
+    z-index: 10;
+}
+.firework-particle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 5;
+}
+.rocket-trail {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 8;
+}
+.sparkle {
+    position: absolute;
+    width: 1.5px;
+    height: 1.5px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 3;
+}
+</style>
+</head>
+<body>
+<!-- BEFORE 12 PAGE -->
+<div class="container" id="beforePage">
+    <div class="title">The Year is Passing...</div>
+    <div class="message">
+        Not everything needs to be rushed.<br>
+        Some endings deserve silence.<br><br>
+        Take a deep breath.<br>
+        Let go of what no longer serves you.<br>
+        The next chapter awaits patiently...
+    </div>
+    <div class="quote">
+        “And now we welcome the new year.<br>
+        Full of things that have never been.”<br>
+        — Rainer Maria Rilke
+    </div>
+</div>
+
+<!-- AFTER 12 PAGE -->
+<div class="container" id="afterPage" style="display: none;">
+    <div class="title" style="color: #fff; text-shadow: 0 0 30px #fff; margin-bottom: 20px;">Happy New Year 2026</div>
+    <div class="message" style="font-size: 21px; line-height: 1.8;">
+        You made it.<br><br>
+        A whole new year stands before you —<br>
+        unwritten, full of quiet possibilities.<br><br>
+        May it bring you moments of deep peace,<br>
+        unexpected joy, and the courage<br>
+        to follow your heart’s gentle whispers.<br><br>
+        May your relationships grow stronger,<br>
+        your dreams take clearer shape,<br>
+        and your kindness return to you tenfold.
+    </div>
+    <div class="quote">
+        “Tomorrow is the first blank page of a 365-page book.<br>
+        Write a good one.”<br>
+        — Brad Paisley
+    </div>
+    <div style="margin-top: 35px;">
+        <button onclick="sendWishes()" style="
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255,107,107,0.5);
+            transition: transform 0.2s;
+        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            Send Good Wishes ✨
+        </button>
+    </div>
+</div>
+
+<script>
+const beforePage = document.getElementById('beforePage');
+const afterPage = document.getElementById('afterPage');
+let fireworksActive = false;
+
+// **AUTHENTIC PROFESSIONAL FIREWORK CHEMISTRY COLORS**
+const pyroColors = {
+    strontiumRed: ['#DC143C', '#FF4500', '#FF6347'],
+    calciumOrange: ['#FF8C00', '#FFA500', '#FFDAB9'],
+    sodiumGold: ['#FFD700', '#FFED4E', '#FFFACD'],
+    bariumGreen: ['#32CD32', '#228B22', '#90EE90'],
+    copperBlue: ['#1E90FF', '#4169E1', '#4682B4'],
+    potassiumPurple: ['#8A2BE2', '#9932CC', '#BA55D3'],
+    silverWhite: ['#C0C0C0', '#D3D3D3', '#F5F5F5'],
+    chrysanthemumPink: ['#FF1493', '#FF69B4', '#DB7093']
+};
+
+function getPyroColor() {
+    const colorNames = Object.keys(pyroColors);
+    const colorSet = pyroColors[colorNames[Math.floor(Math.random() * colorNames.length)]];
+    return colorSet[Math.floor(Math.random() * colorSet.length)];
+}
+
+// Show "After 12" page only at midnight
+function checkTime() {
+    const now = new Date();
+    const target = new Date();
+    target.setHours(0, 0, 0, 0);
+    target.setDate(target.getDate() + 1);
+
+    const diff = target - now;
+    if (diff <= 0) {
+        showAfterPage();
+    } else {
+        setTimeout(checkTime, 1000);
+    }
+}
+
+function showAfterPage() {
+    beforePage.style.display = 'none';
+    afterPage.style.display = 'block';
+    fireworksActive = true;
+    // Start fireworks and sparkles after midnight
+    setInterval(launchScreenWideBurst, 450);
+    setInterval(launchHighBurst, 700);
+    setInterval(launchExtremeBurst, 1000);
+    setInterval(createMassiveSparkles, 250);
+}
+
+function launchScreenWideBurst() {
+    launchRocketBurst(0.22, 10, 50, getPyroColor());
+}
+function launchHighBurst() {
+    launchRocketBurst(0.18, 9, 55, getPyroColor());
+}
+function launchExtremeBurst() {
+    launchRocketBurst(0.15, 8, 60, getPyroColor());
+}
+
+function launchRocketBurst(explodeHeightRatio, rocketSpeed, particleCount, color) {
+    if (!fireworksActive) return;
+    const launchX = window.innerWidth * (0.05 + Math.random() * 0.9);
+    const launchY = window.innerHeight * 0.95;
+    const rocket = document.createElement('div');
+    rocket.className = 'firework-rocket';
+    rocket.style.left = launchX + 'px';
+    rocket.style.top = launchY + 'px';
+    rocket.style.background = color;
+    rocket.style.boxShadow = `0 0 30px ${color}`;
+    document.body.appendChild(rocket);
+
+    let trailY = launchY;
+    const trailId = setInterval(() => {
+        if (!fireworksActive) return;
+        const trail = document.createElement('div');
+        trail.className = 'rocket-trail';
+        trail.style.left = (launchX + (Math.random()-0.5)*12) + 'px';
+        trail.style.top = trailY + 'px';
+        trail.style.background = color;
+        trail.style.boxShadow = `0 0 20px ${color}`;
+        document.body.appendChild(trail);
+        setTimeout(() => trail.remove(), 2000);
+        trailY -= 14;
+    }, 70);
+
+    let rocketY = launchY;
+    const rocketId = setInterval(() => {
+        if (!fireworksActive) return;
+        rocketY -= rocketSpeed;
+        rocket.style.top = rocketY + 'px';
+        if (rocketY <= window.innerHeight * explodeHeightRatio) {
+            clearInterval(rocketId);
+            clearInterval(trailId);
+            rocket.style.transition = 'all 0.5s ease-out';
+            rocket.style.opacity = '0';
+            rocket.style.transform = 'scale(2)';
+            setTimeout(() => rocket.remove(), 500);
+            explodeScreenWideFirework(launchX, rocketY, color, particleCount);
+        }
+    }, 45);
+}
+
+function explodeScreenWideFirework(centerX, centerY, primaryColor, particleCount = 50) {
+    for (let i = 0; i < particleCount; i++) {
+        const particleColor = getPyroColor();
+        const particle = document.createElement('div');
+        particle.className = 'firework-particle';
+        const angle = (i / particleCount) * Math.PI * 2 + (Math.random() - 0.5) * 0.8;
+        const speed = 180 + Math.random() * 120;
+        let vx = Math.cos(angle) * speed * (0.9 + Math.random() * 1.2);
+        let vy = Math.sin(angle) * speed * (0.9 + Math.random() * 1.2);
+        particle.style.left = centerX + 'px';
+        particle.style.top = centerY + 'px';
+        particle.style.background = particleColor;
+        particle.style.width = (4 + Math.random() * 5) + 'px';
+        particle.style.height = particle.style.width;
+        particle.style.boxShadow = `0 0 ${35 + Math.random()*25}px ${particleColor}`;
+        document.body.appendChild(particle);
+
+        let px = centerX, py = centerY, opacity = 1, life = 0;
+        const gravity = 0.22, friction = 0.985;
+        const anim = setInterval(() => {
+            if (!fireworksActive) {
+                particle.remove();
+                return clearInterval(anim);
+            }
+            life++;
+            vx *= friction;
+            vy += gravity;
+            px += vx * 0.012;
+            py += vy * 0.012;
+            opacity = Math.max(0, 1 - life / 180);
+            const scale = Math.max(0.1, 1 - life / 90);
+            particle.style.left = px + 'px';
+            particle.style.top = py + 'px';
+            particle.style.opacity = opacity;
+            particle.style.transform = `scale(${scale})`;
+            if (opacity <= 0.01 || py > window.innerHeight + 120 || px < -120 || px > window.innerWidth + 120) {
+                clearInterval(anim);
+                particle.remove();
+            }
+        }, 25);
+    }
+}
+
+function createMassiveSparkles() {
+    if (!fireworksActive) return;
+    for (let i = 0; i < 10; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = (Math.random() * window.innerWidth) + 'px';
+        sparkle.style.top = (Math.random() * window.innerHeight * 0.7) + 'px';
+        sparkle.style.background = getPyroColor();
+        sparkle.style.boxShadow = `0 0 ${15 + Math.random()*10}px currentColor`;
+        document.body.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 3500);
+    }
+}
+
+function sendWishes() {
+    alert('🌟 Good wishes sent to everyone you hold dear!\n\nMay 2026 bring you peace, love, and countless beautiful moments. 🎉🎆');
+}
+
+// Start checking the time
+checkTime();
+</script>
+</body>
+</html>
